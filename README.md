@@ -60,6 +60,11 @@ conda env create -f environment.yml
 conda activate 3_wise_bears
 ```
 
+### Dependencies
+The generated TeX will be compiled into a PDF with `xelatex`.  Most TeX installations
+have this already, but you should check with `xelatex --version` and install it
+if you don't have it.
+
 ### LLM API Key
 Generally speaking, you'll need an LLM API key to use this.  As delivered,
 this assumes the OpenAI API, but this can easily be changed to a local LLM
