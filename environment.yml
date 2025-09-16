@@ -1,0 +1,16 @@
+name: 3_wise_bears
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - numpy
+  - pip
+  - pip:
+      - langgraph
+      - langchain
+      - langchain-community
+      - langchain-openai
+      - jinja2
+      - ddgs
+      - flask
