@@ -41,6 +41,17 @@ This *usually* works (LLMs aren't great at generating TeX yet) but look
 in `src/generated_tex` for chat history logs, `.tex` and hopefully
 a `.pdf` - with time stamps.
 
+**NOTE** Consider watching debug output on the Developer Console in your
+web browser to see messages like:
+
+```
+. . .
+[Agent 3]::: [iteration 1 - DEBUG] Exiting agent_generate_solution. script.js:100:15
+[iteration 1 - DEBUG] Iteration incremented to 2 script.js:100:15
+[iteration 2 - DEBUG] Reached max_iterations; finishing.
+. . .
+```
+
 ### N Wise Bears - CLI
 The `N_wise_bears.py` is a command line interface (CLI) that more or less
 does the same thing but phrases the problem more as a game master and
