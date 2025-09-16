@@ -4,7 +4,6 @@ channels:
   - defaults
 dependencies:
   - python=3.11
-  - numpy
   - pip
   - pip:
       - langgraph
@@ -12,5 +11,4 @@ dependencies:
       - langchain-community
       - langchain-openai
       - jinja2
-      - ddgs
       - flask
