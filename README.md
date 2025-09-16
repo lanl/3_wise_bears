@@ -5,11 +5,6 @@ This project contains a small collection of *very simple* AI agents based
 on langchain and langgraph that communicate in a round-robin fashion, attempting
 to improve their answer from the critique / actions of the other agents.
 
-We provide a demonstration that uses the DuckDuckGo search engine.  This
-is only chosen because it does not require API keys / costs to access.  A
-serious user should consider replacing this with a paid API access to search
-engines.
-
 ## What is This?
 There are basically two entry points to demonstration agents - a web-interface
 to `goldilocks_and_the_3_agents.py` and a command-line interface to
@@ -91,8 +86,8 @@ Running of the two demos provided in this package are explained below.
 1. `python -m src.main` - note the URL to connect, it will probably
 say ` * Running on http://127.0.0.1:5000`
 2. Connect a web browser to the above address
-3. Select your parameters, initially we'd suggest: GPT-5 mini, no web
-search, 2 iterations, and the dinosaur extinction problem.
+3. Select your parameters, initially we'd suggest: GPT-5 mini, 
+2 iterations, and the dinosaur extinction problem.
 4. Press `Launch` button and watch the colored frames under `Agent Output` 
 for outputs.  In about ~10 minutes a final answer will be provided and a
 button to download a PDF.
