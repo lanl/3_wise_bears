@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic AI Demo</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            width: 100%;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        form {
+            background-color: #ffff;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        #customAlert {
+            display: none;
+            position: fixed;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        #customAlert p {
+            padding: 20px;
+        }
+
+        #customAlert button {
+            background-color: #3b7dce;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .valid {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+
+        .invalid {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+
+        .login-prompt {
+            padding: 80px 50px 50px 50px;
+            margin-right: 50px;
+        }
+
+        .login-text {
+            padding: 120px 50px 50px 50px;
+            text-align: left;
+        }
+    </style>
+    <script>
+        function showCustomAlert() {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('customAlert').style.display = 'block';
+        }
+
+        function closeCustomAlert() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('customAlert').style.display = 'none';
+        }
+    </script>
+</head>
+
+<body>
+    <div class="app-bar">
+        <div><img src="/static/lanl-logo-white.png" alt="LANL Logo" height="45" width="225"></div>
+        <h1>Agentic AI Demo</h1>
+        <div id="user_id" class="user"></div>
+    </div>
+    <div class="container">
+        <div class="form-container">
+            <div class="login-prompt">
+                <div class="card">
+                    <form id="validateForm">
+                        <label for="id"><b>Enter A Valid ID:</b></label>
+                        <input type="text" id="id" name="id" required>
+                        <label for="username"><b>Please Enter Your Name:</b></label>
+                        <input type="text" id="username" name="username" required>
+                        <label for="username"><span class="subtext">* Your name will be used to reauthenticate you if
+                                you are using the same ID!</span></label>
+                        <br />
+                        <br />
+                        <input type="submit" value="Validate">
+                    </form>
+                </div>
+            </div>
+            <div class="login-text">
+                <b>
+                    <h1>Enter a Valid ID and Name</h1>
+                </b>
+                <b>
+                    <h1>to Get Started!</h1>
+                </b>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div style="display: flex; align-items: center; gap: 8px">
+            <div>Funded by </div>
+            <div><img src="/static/ArtIMis.png" alt="ArtIMis Logo" height="24" width="24"></div>
+            <div> ArtIMis</div>
+        </div>
+        <div>
+            Deployed on AWS by ADS & ICS
+        </div>
+    </div>
+    </div>
+    <div id="overlay"></div>
+    <div id="customAlert">
+        <p>Your credentials did not work! Please try one of the following steps -</p>
+        <ul>
+            <li>Check to make sure that you entered a Valid ID and Name</li>
+            <li>If you've logged in before please check the ID and Name and make sure that the Name matches what was entered when you first logged in.</li>
+            <li>If you don't remember the Name that was used, please request a New ID</li>
+        </ul>
+        <br/>
+        <button onclick="closeCustomAlert()">OK</button>
+    </div>
+    <script>
+        document.getElementById('validateForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const id = document.getElementById('id').value;
+            const userName = document.getElementById('username');
+
+            fetch('/validate_id', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id: id, username: username.value }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.valid) {
+                        localStorage.setItem('session_id', id);
+                        localStorage.setItem('username', username.value);
+                        window.location.href = '/'
+                    } else {
+                        showCustomAlert()
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    // document.getElementById('result').innerHTML = '<p>An error occurred. Please try again.</p>';
+                });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LLM Agent Interface</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+  <div class="app-bar">
+    <div><img src="/static/lanl-logo-white.png" alt="LANL Logo" height="45" width="225"></div>
+    <h1>AI Agentic Demo</h1>
+  </div>
+  <div class="page-wrapper">
+    <form id="mainForm">
+      <h3>Configure the AI Model</h3>
+      <div class="paper" style="max-width: 700px; margin: auto; margin-bottom: 64px;">
+        <fieldset>
+          <legend>Select Large Laguage Model (LLM)</legend>
+          <label>
+            <input type="radio" name="llm_model" value="gpt-5-nano" checked>
+            GPT-5 nano: Fastest, cheapest [CAUTION - USUALLY DOESN'T WORK WITH AGENTS] ($)
+          </label>
+          <label>
+            <input type="radio" name="llm_model" value="gpt-5-mini">
+            GPT-5 mini: Fast, cheap ($$)
+          </label>
+          <label>
+            <input type="radio" name="llm_model" value="gpt-5">
+            GPT-5: Best model ($$$)
+          </label>
+        </fieldset>
+        <div style="padding: 8px 0">
+          <label for="iterations" style="display: block; margin-bottom: 8px; font-weight: bold;">
+            How many iterations should the agents go through?
+          </label>
+          <p>More iterations produces more thoughtful responses but takes longer</p>
+          <select id="iterations" name="iterations" style="width: 150px">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3" selected>3 (default)</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+      </div>
+
+      <h3>Define Your Agents</h3>
+      <div style="max-width: 700px; margin: auto; text-align: center;">
+        <p>
+          We have set defaults that will produce meaningful results, so you don't have to change anything; However this is
+          where you can customize the persona of the AI agents that will answer your question below. Changing the tone of
+          voice will provide more entertaining results!
+        </p>
+      </div>
+      <div class="container">
+        <div class="agent">
+          <label for="agent1_system">Agent 1</label>
+          <textarea id="agent1_system" name="agent1_system"></textarea>
+          <div class="select-group">
+            <select name="agent1_voice">
+              <option value="None" selected>Tone of Voice - None</option>
+              <option value="Gentleman Scientist">Gentleman Scientist</option>
+              <option value="Grumpy Professor">Grumpy Professor</option>
+              <option value="Venture Capitalist">Venture Capitalist</option>
+              <option value="J. Rober Oppenheimer">J. Rober Oppenheimer</option>
+              <option value="Richard Phillips Feynman">Richard Phillips Feynman</option>
+              <option value="Hans Bethe">Hans Bethe</option>
+              <option value="Edward Teller">Edward Teller</option>
+            </select>
+          </div>
+        </div>
+        <div class="agent">
+          <label for="agent2_system">Agent 2</label>
+          <textarea id="agent2_system" name="agent2_system"></textarea>
+          <div class="select-group">
+            <select name="agent2_voice">
+              <option value="None" selected>Tone of Voice - None</option>
+              <option value="Gentleman Scientist">Gentleman Scientist</option>
+              <option value="Grumpy Professor">Grumpy Professor</option>
+              <option value="Venture Capitalist">Venture Capitalist</option>
+              <option value="J. Rober Oppenheimer">J. Rober Oppenheimer</option>
+              <option value="Richard Phillips Feynman">Richard Phillips Feynman</option>
+              <option value="Hans Bethe">Hans Bethe</option>
+              <option value="Edward Teller">Edward Teller</option>
+            </select>
+          </div>
+        </div>
+        <div class="agent">
+          <label for="agent3_system">Agent 3</label>
+          <textarea id="agent3_system" name="agent3_system"></textarea>
+          <div class="select-group">
+            <select name="agent3_voice">
+              <option value="None" selected>Tone of Voice - None</option>
+              <option value="Gentleman Scientist">Gentleman Scientist</option>
+              <option value="Grumpy Professor">Grumpy Professor</option>
+              <option value="Venture Capitalist">Venture Capitalist</option>
+              <option value="J. Rober Oppenheimer">J. Rober Oppenheimer</option>
+              <option value="Richard Phillips Feynman">Richard Phillips Feynman</option>
+              <option value="Hans Bethe">Hans Bethe</option>
+              <option value="Edward Teller">Edward Teller</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <h3>Ask Your Question</h3>
+      <div style="display: flex; align-items: center; gap: 16px; margin: 0 auto 16px; width: fit-content;">
+        <div>
+          <p>Don't know what to ask? You can select from one of our pre-programed scenarios:</p>
+        </div>
+        <div>
+          <select id='scenario_select'>
+            <option value=0>1. Generic Problem Solver</option>
+            <option value=1>2. Gamesmanship: Tech Company Merger</option>
+            <option value=2>3. Tech Patent Brinkmanship</option>
+            <option value=3>4. Alternative Explanation for Quantum Entanglement</option>
+            <option value=4>5. Non-Asteroid Explanation of Dinosaur Extinction</option>
+            <option value=5>6. A New Theory of Cosmic Acceleration (No Dark Energy)</option>
+            <option value=6>7. New Hypothesis for the Origin of Conciousness</option>
+            <option value=7>8. Non-Inflationary Explanation of the Early Universe</option>
+          </select>
+        </div>
+      </div>
+      <div class="container" style="gap: 16px;">
+        <div>
+          <img src="/static/3agents-copilot.png" alt="Goldilocks and the 3 Agents Logo" height="200" width="200"
+            id="agent-logo">
+        </div>
+        <div style="flex-grow: 1;">
+          <textarea id="main_question" name="main_question" placeholder="Whatever you want the Agents to discuss."
+            style="width: 100%"></textarea>
+        </div>
+        <div>
+          <div class="submit-container">
+            <button id="submit_button" type="submit">Launch! 🚀</button>
+          </div>
+        </div>
+      </div>
+    </form>
+
+
+    <div id="agent_output" style="display: none">
+      <h3>Agent Output</h3>
+      <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 16px">
+        <div class="info-pill timer">
+          Time Elapsed: <span id="timer" style="font-weight: bold;"></span>
+        </div>
+        <div id="approximate_cost" class="info-pill cost-highlight">
+          Approximate Cost: <span style="font-weight: bold;">$<span id="cost_value">0.00</span></span>
+        </div>
+      </div>
+      <div class="container">
+        <div class="agent">
+          <h3>Agent 1 <span id="a1_spinner" class='spinner' style="display: none"></span></h3>
+          <div id="agent1_updates" class="output-content"></div>
+        </div>
+        <div class="agent">
+          <h3>Agent 2 <span id="a2_spinner" class='spinner' style="display: none"></span></h3>
+          <div id="agent2_updates" class="output-content"></div>
+        </div>
+        <div class="agent">
+          <h3>Agent 3 <span id="a3_spinner" class='spinner' style="display: none"></span></h3>
+          <div id="agent3_updates" class="output-content"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="final_answer_container" style="display: none">
+      <h3>Final Answer</h3>
+      <div id="final_processing">
+        Processing... <span class="spinner"></span>
+      </div>
+      <div id="final_answer_inner_container" style="display: none">
+        <div id="download-container">
+          <button id="download" onclick="generateAndDownloadPdf()">Download PDF</button>
+        </div>
+        <div id="final_answer" class="paper"></div>
+      </div>
+    </div>
+    <div class="footer">
+      <div style="display: flex; align-items: center; gap: 8px">
+        <div>Funded by </div>
+        <div><img src="/static/ArtIMis.png" alt="ArtIMis Logo" height="24" width="24"></div>
+        <div><b>ArtIMis</b></div>
+      </div>
+      <div>
+      </div>
+    </div>
+  </div>
+  <div id="errorOverlay"></div>
+  <div id="customErrorAlert">
+      <p>There was an exception in processing your request! Please try one of the following steps -</p>
+      <ul>
+          <li>Check to make sure that your network connection is good.</li>
+          <li>Please resubmit your request via the submit button.</li>
+      </ul>
+      <br/>
+      <button onclick="closeCustomErrorAlert()">OK</button>
+  </div>
+  <script src="/static/script.js"></script>
+</body>
+
+</html>

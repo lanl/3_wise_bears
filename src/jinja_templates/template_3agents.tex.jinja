@@ -1,0 +1,50 @@
+\documentclass{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage[T1]{fontenc}
+\usepackage{fontspec}
+\setlength{\parskip}{1em}
+
+\begin{document}
+
+\begin{center}
+{\LARGE \textbf{Three-Agent Report}}\\[4pt]
+\end{center}
+
+\section*{Overview}
+\textbf{Question:} {{ question }}\\
+\textbf{LLM Model:} {{ llm_model }}\\
+\textbf{Iterations:} {{ current_iteration }} / {{ max_iterations }}\\
+\textbf{Approximate Cost:} {{ approximate_cost }}\\
+
+\section*{Final Answer}
+\noindent
+{{ final_answer }}
+
+\section*{Summary Report}
+{{ summary_report }}
+
+\section*{Agent Interaction Log}
+{% for iteration in iterations %}
+\subsection*{Iteration {{ loop.index }}}
+\textbf{Agent 1 — Solution}\\
+\noindent
+{{ iteration.solution }}
+
+\medskip
+\textbf{Agent 2 — Critique}\\
+\noindent
+{{ iteration.critique }}
+
+\medskip
+\textbf{Agent 3 — Perspective}\\
+\noindent
+{{ iteration.perspective }}
+
+\bigskip
+\hrule
+\bigskip
+{% endfor %}
+
+\end{document}
