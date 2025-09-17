@@ -7,6 +7,7 @@ from pathlib import Path
 import subprocess
 import json
 import uuid
+import shutil
 from dotenv import load_dotenv
 import traceback
 from flask import Flask, Response, render_template, request, stream_with_context, jsonify
@@ -172,63 +173,57 @@ def health_check():
 def error_test():
     return render_template('error.html')
 
-def compile_tex_to_pdf(tex_path: str | os.PathLike, out_dir: str | os.PathLike | None = None) -> str:
-    """
-    Compile a .tex file to a PDF and return the absolute path to the PDF.
-    Uses latexmk (or pdflatex fallback if you prefer). Raises on failure.
-    """
-    tex_path = Path(tex_path).resolve()
-    out_dir = Path(out_dir).resolve() if out_dir else tex_path.parent
-    out_dir.mkdir(parents=True, exist_ok=True)
+@app.route('/generate_pdf/<path:tex_filename>', methods=['GET'])
+def generate_pdf(tex_filename, use_secure=True):
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    output_dir = os.path.join(script_dir, "generated_tex")
 
-    # latexmk is robust; swap for pdflatex if needed.
-    cmd = [
-        "latexmk",
-        "-pdf",
-        "-interaction=nonstopmode",
-        f"-outdir={str(out_dir)}",
-        str(tex_path)
-    ]
-    result = subprocess.run(cmd, capture_output=True, text=True)
-    if result.returncode != 0:
-        raise RuntimeError(
-            f"latexmk failed (code {result.returncode}).\nSTDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}"
-        )
+    if not tex_filename.lower().endswith('.tex'):
+        return "Invalid file type. Only .tex files are allowed.", 400
 
-    pdf_path = out_dir / (tex_path.stem + ".pdf")
-    if not pdf_path.exists():
-        raise FileNotFoundError(f"Expected PDF not found: {pdf_path}")
-    return str(pdf_path)
+    safe_tex_filename = os.path.basename(secure_filename(tex_filename)) if use_secure else os.path.basename(tex_filename)
+    tex_path = os.path.join(output_dir, safe_tex_filename)
+    pdf_path = tex_path.replace('.tex', '.pdf')
 
-def generate_pdf(tex_path: str, use_secure: bool = False, as_attachment: bool = True):
-    pdf_path = compile_tex_to_pdf(tex_path)
-    if has_request_context():
-        return send_file(pdf_path, as_attachment=as_attachment,
-                         download_name=os.path.basename(pdf_path))
-    else:
-        return pdf_path
+    if not os.path.exists(tex_path):
+        return f"TeX file not found", 404
 
-@app.route('/generate_pdf/<path:tex_relpath>', methods=['GET'])
-def generate_pdf_route(tex_relpath):
-    # Resolve the .tex path inside a safe base directory
-    base_dir = Path(__file__).resolve().parent / "generated_tex"
-    tex_path = (base_dir / tex_relpath).resolve()
-
-    # Prevent path traversal outside base_dir
-    if base_dir not in tex_path.parents and tex_path != base_dir:
-        return jsonify({"error": "Invalid path"}), 400
+    os.makedirs(output_dir, exist_ok=True)
 
     try:
-        pdf_path = compile_tex_to_pdf(tex_path)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        subprocess.run(
+            [
+                'xelatex',
+                '-interaction=nonstopmode',
+                '-halt-on-error',
+                '-no-shell-escape',
+                f'-output-directory={output_dir}',
+                tex_path
+            ],
+            check=True,
+            timeout=60,
+            capture_output=True,
+            text=True
+        )
+    except subprocess.CalledProcessError as e:
+        print("XeLaTeX error:", e.stdout, e.stderr)
+        return "Error generating PDF.", 500
+    except subprocess.TimeoutExpired:
+        return "PDF generation timed out.", 504
 
-    # Serve the PDF to the browser
-    return send_file(
-        pdf_path,
-        as_attachment=True,  # or False if you want inline
-        download_name=os.path.basename(pdf_path)
-    )
+    if not os.path.exists(pdf_path):
+        return "PDF not generated", 500
+
+    if has_request_context():
+        return send_file(
+            pdf_path,
+            mimetype='application/pdf',
+            as_attachment=True,
+            download_name=os.path.basename(pdf_path)
+        )
+    return pdf_path
+
+
 
         
 if __name__ == '__main__':
