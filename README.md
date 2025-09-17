@@ -96,8 +96,16 @@ Worked?  Try a different problem, or your own problem.  Try changing the
 "Voice" of each of the agents.
 
 ### N Wise Bears - CLI
-TODO
+`python -m src.N_wise_bears` runs this demo.  See `--help` for args
+including number of iterations, which LLM to use, and most
+importantly the path to a JSON roles file.  An example is provided
+for 3 fictional countries in a geopolitical game.
 
+For a simple run of the demo try:
+`python -m src.N_wise_bears -n 2 -r ./src/roles/roles_example.json`
+
+Look at the other roles in `src/roles` such as the `startup` and
+`fantasy` (e.g. RPG / dungeon master).
 
 ## Notice of Copyright Assertion (O4903):
 © 2025. Triad National Security, LLC. All rights reserved.  This program was

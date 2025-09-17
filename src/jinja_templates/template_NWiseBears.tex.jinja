@@ -1,0 +1,74 @@
+\documentclass{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\setlength{\parskip}{1em}
+
+\begin{document}
+\tableofcontents
+\newpage
+
+\section{Overview}
+\textbf{LLM Model:} {{ llm_model }}\\
+\textbf{Approximate Cost:} {{ approximate_cost }}\\
+\textbf{Iterations:} {{ iterations_completed }} / {{ max_iterations }}\\
+
+\section{Historical Account}
+\begin{quote}
+{{ historical_account }}
+\end{quote}
+
+\section{Agent Interaction Log}
+
+{% macro pretty_label(key) -%}
+  {%- if role_labels is defined and key in role_labels -%}
+    {{ role_labels[key] }}
+  {%- else -%}
+    {{ key.replace('_',' ')|title }}
+  {%- endif -%}
+{%- endmacro %}
+
+{% for r in rounds %}
+\subsection{Iteration {{ r.iteration }}}
+
+\textbf{Game Master State:}
+\begin{quote}
+{{ r.game_master }}
+\end{quote}
+
+{% for pkey in players_order %}
+\textbf{ {{ pretty_label(pkey) }} }:
+\begin{quote}
+{{ r.players[pkey] }}
+\end{quote}
+{% endfor %}
+
+{% endfor %}
+
+{% if roles is defined and roles.systems is defined %}
+\section{Role Prompts (Reference)}
+\subsection{Game Master}
+\textbf{Name:} {{ pretty_label(roles.game_master) }}\\
+\textbf{System:}
+\begin{quote}
+{{ roles.systems[roles.game_master] }}
+\end{quote}
+
+\subsection{Players}
+{% for pkey in players_order %}
+\textbf{Name:} {{ pretty_label(pkey) }}\\
+\textbf{System:}
+\begin{quote}
+{{ roles.systems[pkey] }}
+\end{quote}
+{% endfor %}
+
+\subsection{Historian}
+\textbf{Name:} {{ pretty_label(roles.historian) }}\\
+\textbf{System:}
+\begin{quote}
+{{ roles.systems[roles.historian] }}
+\end{quote}
+{% endif %}
+
+\end{document}

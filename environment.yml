@@ -12,3 +12,4 @@ dependencies:
       - langchain-openai
       - jinja2
       - flask
+      - rich
